@@ -4,12 +4,15 @@ const mongoose = require('mongoose');
 const EnquiryModelSchema = new mongoose.Schema({
     year: {
         type: String,
-   
+
     },
     make: {
         type: String,
     },
     model: {
+        type: String,
+    },
+    enquiryNumber: {
         type: String,
     },
     contactName: {
@@ -26,24 +29,23 @@ const EnquiryModelSchema = new mongoose.Schema({
     },
     shippingMethod: {
         type: String,
-        // enum: {
-        //     values: [
-        //         'option-1',
-        //         'option-2',
-        //         'option-3',
-        //     ],
-        //     message: "Pls Select Correct shipping Method"
-        // }
-    }, 
+    },
     state: {
         type: String,
     },
-    additionalNotes : {
+    additionalNotes: {
         type: String,
-        },
+    },
+    enquiryDate: {
+        type: String,
+    },
+    isRead: {
+        type: Boolean,
+        default: false // Default value for isRead is false
+    },
     createdAt: {
         type: Date,
-        default: Date.now() 
+        default: Date.now()
     }
 })
 

@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
 app.use(bodyParser.json())
-app.use(express.static(path.join(__dirname,"js")));
+app.use(express.static(path.join(__dirname, "js")));
 
 // admin - vendor-management
 
@@ -93,7 +93,7 @@ app.use('/api/v1/admin', mailConfiguration);
 
 const auth = require('./routes/admin/admin-auth/auth')
 
-app.use('/api/v1/admin',auth);
+app.use('/api/v1/admin', auth);
 
 //vendor
 
@@ -102,8 +102,8 @@ const authVendor = require('./routes/vendor/auth')
 const vendorDetailVendor = require('./routes/vendor/vendorDetail')
 
 
-app.use('/api/v1/vendor',productsVendor);
-app.use('/api/v1/vendor',authVendor);
+app.use('/api/v1/vendor', productsVendor);
+app.use('/api/v1/vendor', authVendor);
 app.use('/api/v1/vendor', vendorDetailVendor);
 
 
@@ -119,7 +119,7 @@ const payment = require('./routes/user/payment')
 
 
 app.use('/api/v1/user', enquiry);
-app.use('/api/v1/user',authUser);
+app.use('/api/v1/user', authUser);
 app.use('/api/v1/user', quote);
 app.use('/api/v1/user', invoice);
 app.use('/api/v1/user', history);
@@ -136,13 +136,26 @@ const recentactiviy = require('./routes/box/recentactiviy')
 
 
 app.use('/api/v1/box', cards);
-app.use('/api/v1/box',news);
+app.use('/api/v1/box', news);
 app.use('/api/v1/box', topselling);
 app.use('/api/v1/box', recentsales);
 app.use('/api/v1/box', recentactiviy);
+
+//Master Management
+
+const addYear = require('./routes/masterManagement/addYear')
+const addMake = require('./routes/masterManagement/addMake')
+const addModel = require('./routes/masterManagement/addModel')
+const addShippingMethod = require('./routes/masterManagement/addShippingMethod')
+
+app.use('/api/v1/masterManagement', addYear);
+app.use('/api/v1/masterManagement', addMake);
+app.use('/api/v1/masterManagement', addModel);
+app.use('/api/v1/masterManagement', addShippingMethod);
+
 
 
 
 app.use(errorMiddleware);
 
-module.exports = app; 
+module.exports = app;
