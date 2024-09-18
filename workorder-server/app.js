@@ -153,7 +153,9 @@ app.use('/api/v1/masterManagement', addMake);
 app.use('/api/v1/masterManagement', addModel);
 app.use('/api/v1/masterManagement', addShippingMethod);
 
+const adminGmail = require('./routes/masterManagement/settings/adminGmail')
 
+app.use('/api/v1/masterManagement', adminGmail);
 
 
 app.use(errorMiddleware);
