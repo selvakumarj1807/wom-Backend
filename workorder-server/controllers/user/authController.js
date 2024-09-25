@@ -2,6 +2,8 @@ const catchAsyncError = require('../../middlewares/catchAsyncError');
 const User = require('../../models/user/userModel');
 const ErrorHandler = require('../../utils/errorHandler');
 const sendToken = require('../../utils/jwt')
+const APIFeatures = require('../../utils/apiFeatures');
+
 
 //Register user
 exports.registerUser = catchAsyncError(async(req, res, next) => {
@@ -61,3 +63,17 @@ exports.logoutUser = (req, res, next) => {
             message: "Logged out successfully"
         });
 };
+
+//get tracking - /api/v1/tracking
+exports.getUser = async(req, res, next) => {
+    // const resPerPage = 2;
+    // const apiFeatures = new APIFeatures(Product.find(), req.query).search().filter().paginate(resPerPage);
+    const apiFeatures = new APIFeatures(User.find(), req.query).search().filter();
+
+    const user = await apiFeatures.query;
+    res.status(200).json({
+        success: true,
+        count: user.length,
+        user
+    })
+}

@@ -22,7 +22,7 @@ const vendorShema = new mongoose.Schema({
     },
     avatar: {
         type: String,
-        required: true
+        required: false
     },
     role: {
         type: String,
@@ -36,17 +36,17 @@ const vendorShema = new mongoose.Schema({
     }
 })
 
-vendorShema.pre('save', async function (next) {
+vendorShema.pre('save', async function(next) {
     this.password = await bcrypt.hash(this.password, 10)
 })
 
-vendorShema.methods.getJwtToken = function () {
+vendorShema.methods.getJwtToken = function() {
     return jwt.sign({ id: this.id }, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_TIME
     })
 }
 
-vendorShema.methods.isValidPassword = async function (enteredPassword) {
+vendorShema.methods.isValidPassword = async function(enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password)
 }
 

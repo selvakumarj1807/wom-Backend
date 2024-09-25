@@ -1,25 +1,21 @@
-const { request } = require('express');
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const pushNotificationSchema = new mongoose.Schema({
-    from: {
-        type: String,
-        required: [true, "Pls enter From"]
-    },
-    message: {
-        type: String,
-        required: [true, "Pls enter Message"]
-    },
-    document: {
-        type: String,
-        required: [true, "Pls enter Document"]
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now()
-    }
-})
+const EmailSchema = new Schema({
+    email: String,
+    readStatus: Boolean,
+});
 
-let schema = mongoose.model('pushNotification', pushNotificationSchema);
+const NotificationSchema = new Schema({
+    year: String,
+    make: String,
+    model: String,
+    additionalNotes: String,
+    email: [EmailSchema],
+    enquiryNumber: String,
+    enquiryDate: String,
+    isRead: Boolean,
+    createdAt: { type: Date, default: Date.now }
+});
 
-module.exports = schema;
+module.exports = mongoose.model('pushNotification', NotificationSchema);
