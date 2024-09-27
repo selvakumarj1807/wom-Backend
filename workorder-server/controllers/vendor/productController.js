@@ -5,7 +5,7 @@ const APIFeatures = require('../../utils/apiFeatures');
 
 
 //get products - /api/v1/products
-exports.getProducts = async (req, res, next) => {
+exports.getProducts = async(req, res, next) => {
     // const resPerPage = 2;
     // const apiFeatures = new APIFeatures(Product.find(), req.query).search().filter().paginate(resPerPage);
     const apiFeatures = new APIFeatures(Product.find(), req.query).search().filter();
@@ -19,7 +19,7 @@ exports.getProducts = async (req, res, next) => {
 }
 
 //create product - /api/v1/product/new
-exports.newProduct = catchAsyncError(async (req, res, next) => {
+exports.newProduct = catchAsyncError(async(req, res, next) => {
     const product = await Product.create(req.body);
     res.status(201).json({
         success: true,
@@ -30,7 +30,7 @@ exports.newProduct = catchAsyncError(async (req, res, next) => {
 //get single product - /api/v1/product/:id
 const mongoose = require('mongoose');
 
-exports.getSingleProduct = async (req, res, next) => {
+exports.getSingleProduct = async(req, res, next) => {
     try {
         const isValidObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
         if (!isValidObjectId) {
@@ -54,7 +54,7 @@ exports.getSingleProduct = async (req, res, next) => {
 
 
 //update product - /api/v1/product/:id
-exports.updateProduct = async (req, res, next) => {
+exports.updateProduct = async(req, res, next) => {
     try {
         let product = await Product.findById(req.params.id);
 
@@ -84,7 +84,7 @@ exports.updateProduct = async (req, res, next) => {
 
 
 // delete product - /api/v1/product/:id
-exports.deleteProduct = async (req, res, next) => {
+exports.deleteProduct = async(req, res, next) => {
     try {
         const product = await Product.findByIdAndDelete(req.params.id);
 
@@ -106,3 +106,21 @@ exports.deleteProduct = async (req, res, next) => {
         });
     }
 }
+
+//get single VendorDetail - /api/v1/VendorDetail/:id
+
+exports.getProductsByEmail = async(req, res, next) => {
+
+    const email = req.params.email;
+    const apiFeatures = new APIFeatures(Product.findOne({ email: email }), req.query).search().filter();
+
+    const products = await apiFeatures.query;
+    if (!products) {
+        return next(new ErrorHandler('Vendor product not found', 404));
+    }
+    res.status(200).json({
+        success: true,
+        count: products.length,
+        products
+    })
+};

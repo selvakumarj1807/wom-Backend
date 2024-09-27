@@ -147,11 +147,19 @@ const addYear = require('./routes/masterManagement/addYear')
 const addMake = require('./routes/masterManagement/addMake')
 const addModel = require('./routes/masterManagement/addModel')
 const addShippingMethod = require('./routes/masterManagement/addShippingMethod')
+const addState = require('./routes/masterManagement/addState')
+const addStatus = require('./routes/masterManagement/addStatus')
+const addCategory = require('./routes/masterManagement/addCategory')
+
 
 app.use('/api/v1/masterManagement', addYear);
 app.use('/api/v1/masterManagement', addMake);
 app.use('/api/v1/masterManagement', addModel);
 app.use('/api/v1/masterManagement', addShippingMethod);
+app.use('/api/v1/masterManagement', addState);
+app.use('/api/v1/masterManagement', addStatus);
+app.use('/api/v1/masterManagement', addCategory);
+
 
 const adminGmail = require('./routes/masterManagement/settings/adminGmail')
 
