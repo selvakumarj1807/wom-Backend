@@ -7,12 +7,15 @@ const bodyParser = require('body-parser')
 const path = require("path");
 
 
-
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
 app.use(bodyParser.json())
 app.use(express.static(path.join(__dirname, "js")));
+
+// Serve static files from the uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 // admin - vendor-management
 
@@ -100,11 +103,14 @@ app.use('/api/v1/admin', auth);
 const productsVendor = require('./routes/vendor/product');
 const authVendor = require('./routes/vendor/auth')
 const vendorDetailVendor = require('./routes/vendor/vendorDetail')
+const vendorQuote = require('./routes/vendor/vendorQuote')
 
 
 app.use('/api/v1/vendor', productsVendor);
 app.use('/api/v1/vendor', authVendor);
 app.use('/api/v1/vendor', vendorDetailVendor);
+app.use('/api/v1/vendor', vendorQuote);
+
 
 
 //user
