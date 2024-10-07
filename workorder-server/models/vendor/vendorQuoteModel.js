@@ -21,7 +21,7 @@ const vendorQuoteSchema = new Schema({
     },
     action: {
         type: String,
-        default: 'Bending' // Default value for isRead is false
+        default: 'Pending' // Default value for isRead is false
     },
     attachedFile: String, // Add this field to store the uploaded file name
     createdAt: { type: Date, default: Date.now },
