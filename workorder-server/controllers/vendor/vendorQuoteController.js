@@ -120,3 +120,25 @@ exports.updateVendorQuote = async(req, res, next) => {
         });
     }
 }
+
+exports.getVendorQuoteByQNoAndQDate = async (req, res, next) => {
+    const qno = req.params.qno;
+    const quoteDate = req.query.quoteDate;
+
+    // Build the query using both qno and quoteDate
+    const apiFeatures = new APIFeatures(
+        VendorQuote.findOne({ quoteNumber: qno, quoteDate: quoteDate }), 
+        req.query
+    ).search().filter();
+
+    const vendorQuote = await apiFeatures.query;
+
+    if (!vendorQuote) {
+        return next(new ErrorHandler('Vendor Quote not found', 404));
+    }
+
+    res.status(200).json({
+        success: true,
+        vendorQuote
+    });
+};
