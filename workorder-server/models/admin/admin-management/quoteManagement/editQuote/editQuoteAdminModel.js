@@ -1,43 +1,34 @@
 const { request } = require('express');
 const mongoose = require('mongoose');
 
+const Schema = mongoose.Schema;
+
+const ProductSchema = new Schema({
+    product: String,
+    unit: String,
+    amount: String,
+    price: String,
+});
+ 
 const editQuoteAdminSchema = new mongoose.Schema({
-    orderNumber: {
-        type: String,
-        required: [true, "Pls enter Order Number"]
-    },
-    receivedDate: {
-        type: Date,
-        required: [true, "Pls enter Received Date"]
-    },
-    name: {
-        type: String,
-        required: [true, "Pls enter Name"]
-    },
-    engineCode: {
-        type: String,
-        required: [true, "Pls enter Engine Code"]
-    },
-    quantity: {
-        type: String,
-        required: [true, "Pls enter Quantity"]
-    },
-    unitPrice: {
-        type: String,
-        required: [true, "Pls enter Unit Price"]
-    },
-    totalPrice: {
-        type: String,
-        required: [true, "Pls enter Total Price"]
+    invoiceNumber: String,
+    enquiryNumber: String,
+    quoteNumber: String,
+    email: String,
+    quoteDate: String,
+    forwordDate: String,
+    total: String,
+    items: [ProductSchema],
+    isRead: {
+        type: Boolean,
+        default: false // Default value for isRead is false
     },
     action: {
         type: String,
-        required: [true, "Pls enter Action"]
+        default: 'Pending' // Default value for isRead is false
     },
-    createdAt: {
-        type: Date,
-        default: Date.now()
-    }
+    attachedFile: String, // Add this field to store the uploaded file name
+    createdAt: { type: Date, default: Date.now },
 })
 
 let schema = mongoose.model('editQuoteAdmin', editQuoteAdminSchema);

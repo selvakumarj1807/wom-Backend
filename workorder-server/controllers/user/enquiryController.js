@@ -75,3 +75,36 @@ exports.updateEnquiries = async(req, res, next) => {
         });
     }
 }
+
+exports.getEnquiryNumber = async(req, res, next) => {
+
+    const enquiryNumber = req.params.id;
+    const apiFeatures = new APIFeatures(Enquiry.findOne({ enquiryNumber: enquiryNumber }), req.query).search().filter();
+
+    const enquiry = await apiFeatures.query;
+    if (!enquiry) {
+        return next(new ErrorHandler('Enquiry not found', 404));
+    }
+    res.status(200).json({
+        success: true,
+        count: enquiry.length,
+        enquiry
+    })
+};
+
+exports.getUserEnquiryByEmail = async(req, res, next) => {
+
+    const email = req.params.email;
+    const apiFeatures = new APIFeatures(Enquiry.findOne({ email: email }), req.query).search().filter();
+
+    const enquiry = await apiFeatures.query;
+    if (!enquiry) {
+        return next(new ErrorHandler('Enquiry not found', 404));
+    }
+    res.status(200).json({
+        success: true,
+        count: enquiry.length,
+        enquiry
+    })
+};
+

@@ -4,12 +4,32 @@ const catchAsyncError = require('../../../../../middlewares/catchAsyncError');
 const APIFeatures = require('../../../../../utils/apiFeatures');
 
 //create editQuoteAdmin - /api/v1/admin/editQuoteAdmin/new
-exports.newEditQuoteAdmin = catchAsyncError(async (req, res, next) => {
-    const editQuote = await editQuoteAdmin.create(req.body);
+
+exports.newEditQuoteAdmin = catchAsyncError(async(req, res, next) => {
+    // Extract the file name if the file exists
+    const attachedFile = req.file ? req.file.filename : null;
+
+    // Parse the items array, since it's being sent as a string
+    const items = req.body.items ? JSON.parse(req.body.items) : [];
+
+    // Create the new vendor quote with the correct data structure
+    const editQuoteForword = await editQuoteAdmin.create({
+        invoiceNumber: req.body.invoiceNumber,
+        enquiryNumber: req.body.enquiryNumber,
+        items: items,
+        attachedFile, // Save the file name in the DB
+        quoteNumber: req.body.quoteNumber, // If enquiryNo is sent, include it
+        quoteDate: req.body.quoteDate,
+        forwordDate: req.body.forwordDate,
+        total: req.body.total,
+        email: req.body.email,
+
+    });
+
     res.status(201).json({
         success: true,
-        editQuote
-    })
+        editQuoteForword,
+    });
 });
 
 //get editQuoteAdmin - /api/v1/admin/editQuoteAdmin
@@ -18,11 +38,11 @@ exports.getEditQuoteAdmin = async (req, res, next) => {
     // const apiFeatures = new APIFeatures(Product.find(), req.query).search().filter().paginate(resPerPage);
     const apiFeatures = new APIFeatures(editQuoteAdmin.find(), req.query).search().filter();
 
-    const editQuote = await apiFeatures.query;
+    const editQuoteForword = await apiFeatures.query;
     res.status(200).json({
         success: true,
-        count: editQuote.length,
-        editQuote
+        count: editQuoteForword.length,
+        editQuoteForword
     })
 }
 
@@ -36,41 +56,67 @@ exports.getSingleEditQuoteAdmin = async (req, res, next) => {
             return next(new ErrorHandler(`Resource not found: ${req.params.id}`, 400));
         }
 
-        const editQuote = await editQuoteAdmin.findById(req.params.id);
+        const editQuoteForword = await editQuoteAdmin.findById(req.params.id);
 
-        if (!editQuote) {
+        if (!editQuoteForword) {
             return next(new ErrorHandler('edit Quote Admin not found', 404));
         }
 
         res.status(200).json({
             success: true,
-            editQuote
+            editQuoteForword
         });
     } catch (err) {
         next(err);
     }
 };
 
+const path = require('path');
+const fs = require('fs'); // File system module to access files
+
+// Download attached file
+exports.downloadQuoteAttachedFile = catchAsyncError(async(req, res, next) => {
+    const filename = req.params.filename;
+
+    // Construct the file path
+    const filePath = path.join(__dirname, '../../../../../invoices', filename);
+
+    // Check if the file exists before trying to serve it
+    fs.access(filePath, fs.constants.F_OK, (err) => {
+        if (err) {
+            return next(new ErrorHandler('File not found', 404));
+        }
+
+        // Set headers and send the file
+        res.download(filePath, (err) => {
+            if (err) {
+                return next(new ErrorHandler('Error in file download', 500));
+            }
+        });
+    });
+});
+
+
 //update editQuoteAdmin - /api/v1/admin/editQuoteAdmin/:id
 exports.updateEditQuoteAdmin = async (req, res, next) => {
     try {
-        let editQuote = await editQuoteAdmin.findById(req.params.id);
+        let editQuoteForword = await editQuoteAdmin.findById(req.params.id);
 
-        if (!editQuote) {
+        if (!editQuoteForword) {
             return res.status(404).json({
                 success: false,
                 message: "edit Quote Admin not found"
             });
         }
 
-        editQuote = await editQuoteAdmin.findByIdAndUpdate(req.params.id, req.body, {
+        editQuoteForword = await editQuoteAdmin.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true
         })
 
         res.status(200).json({
             success: true,
-            editQuote
+            editQuoteForword
         })
     } catch (error) {
         return res.status(500).json({
@@ -79,3 +125,20 @@ exports.updateEditQuoteAdmin = async (req, res, next) => {
         });
     }
 }
+
+exports.getForwardEditQuoteAdminByEmail = async(req, res, next) => {
+
+    const email = req.params.email;
+    const apiFeatures = new APIFeatures(editQuoteAdmin.findOne({ email: email }), req.query).search().filter();
+
+    const editQuoteForword = await apiFeatures.query;
+    if (!editQuoteForword) {
+        return next(new ErrorHandler('EditQuoteForword not found', 404));
+    }
+    res.status(200).json({
+        success: true,
+        count: editQuoteForword.length,
+        editQuoteForword
+    })
+};
+

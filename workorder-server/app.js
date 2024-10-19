@@ -65,7 +65,7 @@ const adminToVendor = require('./routes/admin/admin-management/enquiryManagement
 const vendorToAdmin = require('./routes/admin/admin-management/enquiryManagement/vendor/vendorToAdmin')
 const pushNotification = require('./routes/admin/admin-management/pushNotification/pushNotification')
 const vendorQuoteReceived = require('./routes/admin/admin-management/quoteManagement/vendorQuote/vendorQuoteReceived')
-const editQuoteAdmin = require('./routes/admin/admin-management/quoteManagement/editQuote/editQuoteAdmin')
+const forwardEditQuoteAdmin = require('./routes/admin/admin-management/quoteManagement/editQuote/editQuoteAdmin')
 const userQuoteForward = require('./routes/admin/admin-management/quoteManagement/userQuote/userQuoteForward')
 const orderManagement = require('./routes/admin/admin-management/orderManagement/orderManagement')
 const deliveryManagementUser = require('./routes/admin/admin-management/deliveryManagement/user/deliveryManagementUser')
@@ -83,7 +83,7 @@ app.use('/api/v1/admin', adminToVendor);
 app.use('/api/v1/admin', vendorToAdmin);
 app.use('/api/v1/admin', pushNotification);
 app.use('/api/v1/admin', vendorQuoteReceived);
-app.use('/api/v1/admin', editQuoteAdmin);
+app.use('/api/v1/admin', forwardEditQuoteAdmin);
 app.use('/api/v1/admin', userQuoteForward);
 app.use('/api/v1/admin', orderManagement);
 app.use('/api/v1/admin', deliveryManagementUser);
