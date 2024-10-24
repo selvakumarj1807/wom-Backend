@@ -12,7 +12,6 @@ exports.newEditQuoteAdmin = catchAsyncError(async(req, res, next) => {
     // Parse the items array, since it's being sent as a string
     const items = req.body.items ? JSON.parse(req.body.items) : [];
 
-    // Create the new vendor quote with the correct data structure
     const editQuoteForword = await editQuoteAdmin.create({
         invoiceNumber: req.body.invoiceNumber,
         enquiryNumber: req.body.enquiryNumber,
@@ -142,3 +141,64 @@ exports.getForwardEditQuoteAdminByEmail = async(req, res, next) => {
     })
 };
 
+exports.getForwardEditQuoteAdminByQNoAndQDate = async (req, res, next) => {
+    const ino = req.params.ino;
+    const forwordDate = req.query.forwordDate;
+
+    // Build the query using both qno and quoteDate
+    const apiFeatures = new APIFeatures(
+        editQuoteAdmin.findOne({ invoiceNumber: ino, forwordDate: forwordDate }), 
+        req.query
+    ).search().filter();
+
+    const editQuoteForword = await apiFeatures.query;
+
+    if (!editQuoteForword) {
+        return next(new ErrorHandler('Invoice not found', 404));
+    }
+
+    res.status(200).json({
+        success: true,
+        editQuoteForword
+    });
+};
+
+exports.getForwardEditQuoteAdminUnread = catchAsyncError(async(req, res, next) => {
+    const email = req.query.emailCookie;
+
+    const editQuoteForword = await editQuoteAdmin.find({ isRead: false, email: email });
+
+    res.status(200).json({
+        success: true,
+        count: editQuoteForword.length,
+        editQuoteForword,
+    });
+});
+
+exports.updateForwardEditQuoteAdminUnread = async(req, res, next) => {
+    try {
+        let editQuoteForword = await editQuoteAdmin.findById(req.params.id);
+
+        if (!editQuoteForword) {
+            return res.status(404).json({
+                success: false,
+                message: "Invoice not found"
+            });
+        }
+
+        editQuoteForword = await editQuoteAdmin.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true
+        })
+
+        res.status(200).json({
+            success: true,
+            editQuoteForword
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
+    }
+}
