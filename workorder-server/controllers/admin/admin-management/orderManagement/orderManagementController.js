@@ -2,15 +2,35 @@ const orderManagement = require('../../../../models/admin/admin-management/order
 const ErrorHandler = require('../../../../utils/errorHandler');
 const catchAsyncError = require('../../../../middlewares/catchAsyncError');
 const APIFeatures = require('../../../../utils/apiFeatures');
-
-//create orderManagement - /api/v1/admin/orderManagement/new
+ 
 exports.newOrderManagement = catchAsyncError(async (req, res, next) => {
-    const orderManage = await orderManagement.create(req.body);
-    res.status(201).json({
-        success: true,
-        orderManage
-    })
+    try {
+        const items = req.body.items ? JSON.parse(req.body.items) : [];
+
+        const orderManage = await orderManagement.create({
+            invoiceNumber: req.body.invoiceNumber,
+            enquiryNumber: req.body.enquiryNumber,
+            quoteNumber: req.body.quoteNumber,
+            quoteDate: req.body.quoteDate,
+            forwordDate: req.body.forwordDate,
+            totalPaid: req.body.totalPaid,
+            email: req.body.email,
+            orderDate: req.body.orderDate,
+            orderNumber: req.body.orderNumber,
+            items: items,
+        });
+
+        res.status(201).json({
+            success: true,
+            message: 'Order created successfully',
+            orderManage,
+        });
+    } catch (error) {
+        console.error('Error creating order:', error);
+        res.status(500).json({ success: false, message: 'Failed to create order' });
+    }
 });
+
 
 //get orderManagement - /api/v1/admin/orderManagement
 exports.getOrderManagement = async (req, res, next) => {
@@ -79,3 +99,31 @@ exports.updateOrderManagement = async (req, res, next) => {
         });
     }
 }
+
+exports.getOrderManagementByEmail = async(req, res, next) => {
+
+    const email = req.params.email;
+    const apiFeatures = new APIFeatures(orderManagement.findOne({ email: email }), req.query).search().filter();
+
+    const orderManage = await apiFeatures.query;
+    if (!orderManage) {
+        return next(new ErrorHandler('OrderManagement not found', 404));
+    }
+    res.status(200).json({
+        success: true,
+        count: orderManage.length,
+        orderManage
+    })
+};
+
+
+// GET - Retrieve vendor quotes
+exports.getorderManagementUnread = catchAsyncError(async(req, res, next) => {
+    const orderManage = await orderManagement.find({ isRead: false });
+
+    res.status(200).json({
+        success: true,
+        count: orderManage.length,
+        orderManage,
+    });
+});
