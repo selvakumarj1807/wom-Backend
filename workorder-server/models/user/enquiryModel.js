@@ -33,6 +33,12 @@ const EnquiryModelSchema = new mongoose.Schema({
     state: {
         type: String,
     },
+    address: {
+        type: String,
+    },
+    city: {
+        type: String,
+    },
     additionalNotes: {
         type: String,
     },

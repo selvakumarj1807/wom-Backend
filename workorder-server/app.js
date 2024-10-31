@@ -68,6 +68,7 @@ const vendorQuoteReceived = require('./routes/admin/admin-management/quoteManage
 const forwardEditQuoteAdmin = require('./routes/admin/admin-management/quoteManagement/editQuote/editQuoteAdmin')
 const userQuoteForward = require('./routes/admin/admin-management/quoteManagement/userQuote/userQuoteForward')
 const orderManagement = require('./routes/admin/admin-management/orderManagement/orderManagement')
+const orderManagementVendor = require('./routes/admin/admin-management/orderManagement/orderManagementVendor')
 const deliveryManagementUser = require('./routes/admin/admin-management/deliveryManagement/user/deliveryManagementUser')
 const businessSetup = require('./routes/admin/admin-management/configurationSettings/businessSetup')
 const paymentMethod = require('./routes/admin/admin-management/configurationSettings/paymentMethod')
@@ -86,6 +87,7 @@ app.use('/api/v1/admin', vendorQuoteReceived);
 app.use('/api/v1/admin', forwardEditQuoteAdmin);
 app.use('/api/v1/admin', userQuoteForward);
 app.use('/api/v1/admin', orderManagement);
+app.use('/api/v1/admin', orderManagementVendor);
 app.use('/api/v1/admin', deliveryManagementUser);
 app.use('/api/v1/admin', businessSetup);
 app.use('/api/v1/admin', paymentMethod);

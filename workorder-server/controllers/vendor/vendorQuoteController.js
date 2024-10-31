@@ -2,7 +2,7 @@ const ErrorHandler = require('../../utils/errorHandler');
 const VendorQuote = require('../../models/vendor/vendorQuoteModel');
 const catchAsyncError = require('../../middlewares/catchAsyncError');
 const APIFeatures = require('../../utils/apiFeatures');
-
+ 
 exports.newVendorQuote = catchAsyncError(async(req, res, next) => {
     // Extract the file name if the file exists
     const attachedFile = req.file ? req.file.filename : null;
@@ -141,4 +141,20 @@ exports.getVendorQuoteByQNoAndQDate = async (req, res, next) => {
         success: true,
         vendorQuote
     });
+};
+
+exports.getVendorQuoteQno = async(req, res, next) => {
+
+    const quoteNumber = req.params.id;
+    const apiFeatures = new APIFeatures(VendorQuote.findOne({ quoteNumber: quoteNumber }), req.query).search().filter();
+
+    const vendorQuote = await apiFeatures.query;
+    if (!vendorQuote) {
+        return next(new ErrorHandler('quoteNumber not found', 404));
+    }
+    res.status(200).json({
+        success: true,
+        count: vendorQuote.length,
+        vendorQuote
+    })
 };

@@ -1,21 +1,20 @@
-const orderManagement = require('../../../../models/admin/admin-management/orderManagement/orderManagementModel');
+const orderManagementVendor = require('../../../../models/admin/admin-management/orderManagement/orderManagementVendorModel');
 const ErrorHandler = require('../../../../utils/errorHandler');
 const catchAsyncError = require('../../../../middlewares/catchAsyncError');
 const APIFeatures = require('../../../../utils/apiFeatures');
  
-exports.newOrderManagement = catchAsyncError(async (req, res, next) => {
+exports.newOrderManagementVendor = catchAsyncError(async (req, res, next) => {
     try {
         const items = req.body.items ? JSON.parse(req.body.items) : [];
 
-        const orderManage = await orderManagement.create({
-            invoiceNumber: req.body.invoiceNumber,
+        const orderManageVendor = await orderManagementVendor.create({
             enquiryNumber: req.body.enquiryNumber,
             quoteNumber: req.body.quoteNumber,
             quoteDate: req.body.quoteDate,
-            forwordDate: req.body.forwordDate,
+            vendorPaidDate: req.body.vendorPaidDate,
             totalPaid: req.body.totalPaid,
-            email: req.body.email,
-            orderDate: req.body.orderDate,
+            userEmail: req.body.userEmail,
+            vendorEmail: req.body.vendorEmail,
             orderNumber: req.body.orderNumber,
             items: items,
             contactName: req.body.contactName,
@@ -29,7 +28,7 @@ exports.newOrderManagement = catchAsyncError(async (req, res, next) => {
         res.status(201).json({
             success: true,
             message: 'Order created successfully',
-            orderManage,
+            orderManageVendor,
         });
     } catch (error) {
         console.error('Error creating order:', error);
@@ -39,38 +38,38 @@ exports.newOrderManagement = catchAsyncError(async (req, res, next) => {
 
 
 //get orderManagement - /api/v1/admin/orderManagement
-exports.getOrderManagement = async (req, res, next) => {
+exports.getOrderManagementVendor = async (req, res, next) => {
     // const resPerPage = 2;
     // const apiFeatures = new APIFeatures(Product.find(), req.query).search().filter().paginate(resPerPage);
-    const apiFeatures = new APIFeatures(orderManagement.find(), req.query).search().filter();
+    const apiFeatures = new APIFeatures(orderManagementVendor.find(), req.query).search().filter();
 
-    const orderManage = await apiFeatures.query;
+    const orderManageVendor = await apiFeatures.query;
     res.status(200).json({
         success: true,
-        count: orderManage.length,
-        orderManage
+        count: orderManageVendor.length,
+        orderManageVendor
     })
 }
 
 //get single orderManagement - /api/v1/admin/orderManagement/:id
 const mongoose = require('mongoose');
 
-exports.getSingleOrderManagement = async (req, res, next) => {
+exports.getSingleOrderManagementVendor = async (req, res, next) => {
     try {
         const isValidObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
         if (!isValidObjectId) {
             return next(new ErrorHandler(`Resource not found: ${req.params.id}`, 400));
         }
 
-        const orderManage = await orderManagement.findById(req.params.id);
+        const orderManageVendor = await orderManagementVendor.findById(req.params.id);
 
-        if (!orderManage) {
+        if (!orderManageVendor) {
             return next(new ErrorHandler('order Management not found', 404));
         }
 
         res.status(200).json({
             success: true,
-            orderManage
+            orderManageVendor
         });
     } catch (err) {
         next(err);
@@ -78,25 +77,25 @@ exports.getSingleOrderManagement = async (req, res, next) => {
 };
 
 //update orderManagement - /api/v1/admin/orderManagement/:id
-exports.updateOrderManagement = async (req, res, next) => {
+exports.updateOrderManagementVendor = async (req, res, next) => {
     try {
-        let orderManage = await orderManagement.findById(req.params.id);
+        let orderManageVendor = await orderManagementVendor.findById(req.params.id);
 
-        if (!orderManage) {
+        if (!orderManageVendor) {
             return res.status(404).json({
                 success: false,
                 message: "order Management not found"
             });
         }
 
-        orderManage = await orderManagement.findByIdAndUpdate(req.params.id, req.body, {
+        orderManageVendor = await orderManagementVendor.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true
         })
 
         res.status(200).json({
             success: true,
-            orderManage
+            orderManageVendor
         })
     } catch (error) {
         return res.status(500).json({
@@ -106,30 +105,30 @@ exports.updateOrderManagement = async (req, res, next) => {
     }
 }
 
-exports.getOrderManagementByEmail = async(req, res, next) => {
+exports.getOrderManagementVendorByEmail = async(req, res, next) => {
 
     const email = req.params.email;
-    const apiFeatures = new APIFeatures(orderManagement.findOne({ email: email }), req.query).search().filter();
+    const apiFeatures = new APIFeatures(orderManagementVendor.findOne({ vendorEmail: email }), req.query).search().filter();
 
-    const orderManage = await apiFeatures.query;
-    if (!orderManage) {
+    const orderManageVendor = await apiFeatures.query;
+    if (!orderManageVendor) {
         return next(new ErrorHandler('OrderManagement not found', 404));
     }
     res.status(200).json({
         success: true,
-        count: orderManage.length,
-        orderManage
+        count: orderManageVendor.length,
+        orderManageVendor
     })
 };
 
 
 // GET - Retrieve vendor quotes
-exports.getorderManagementUnread = catchAsyncError(async(req, res, next) => {
-    const orderManage = await orderManagement.find({ isRead: false });
+exports.getOrderManagementVendorUnread = catchAsyncError(async(req, res, next) => {
+    const orderManageVendor = await orderManagementVendor.find({ isRead: false });
 
     res.status(200).json({
         success: true,
-        count: orderManage.length,
-        orderManage,
+        count: orderManageVendor.length,
+        orderManageVendor,
     });
 });

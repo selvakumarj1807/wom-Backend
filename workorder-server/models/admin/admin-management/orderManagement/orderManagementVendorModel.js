@@ -10,13 +10,12 @@ const ProductSchema = new Schema({
     price: String,
 });
  
-const orderManagementSchema = new mongoose.Schema({
-    invoiceNumber: String,
+const orderManagementVendorSchema = new mongoose.Schema({
     enquiryNumber: String,
     quoteNumber: String,
     orderNumber: String,
-    orderDate: String,
-    email: String,
+    userEmail: String,
+    vendorEmail: String,
     contactName: String,
     mobile: String,
     address: String,
@@ -24,7 +23,7 @@ const orderManagementSchema = new mongoose.Schema({
     pincode: String,
     state: String,
     quoteDate: String,
-    forwordDate: String,
+    vendorPaidDate: String,
     totalPaid: String,
     items: [ProductSchema],
     isRead: {
@@ -39,6 +38,6 @@ const orderManagementSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
 })
 
-let schema = mongoose.model('orderManagement', orderManagementSchema);
+let schema = mongoose.model('orderManagementVendor', orderManagementVendorSchema);
 
 module.exports = schema;

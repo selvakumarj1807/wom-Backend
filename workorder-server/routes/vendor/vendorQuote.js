@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const { newVendorQuote, getVendorQuote, downloadAttachedFile, getVendorQuoteByEmail, getUnreadVendorQuote, updateVendorQuote, getVendorQuoteByQNoAndQDate } = require('../../controllers/vendor/vendorQuoteController');
+const { newVendorQuote, getVendorQuote, downloadAttachedFile, getVendorQuoteByEmail, getUnreadVendorQuote, updateVendorQuote, getVendorQuoteByQNoAndQDate, getVendorQuoteQno } = require('../../controllers/vendor/vendorQuoteController');
 
 const router = express.Router();
 
@@ -26,6 +26,7 @@ router.route('/vendorQuote/:email').get(getVendorQuoteByEmail);
 router.route('/vendorQuoteunread').get(getUnreadVendorQuote);
 router.route('/vendorQuote/:id').put(updateVendorQuote);
 router.route('/vendorQuoteQno/:qno').get(getVendorQuoteByQNoAndQDate);
+router.route('/vendor/vendorQuoteQno/:id').get(getVendorQuoteQno);
 
 
 
